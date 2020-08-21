@@ -1,5 +1,5 @@
-#include<fcntl.h>
-#include<errno.h>
+#include <fcntl.h>
+#include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
@@ -66,14 +66,14 @@ int main(int argc, char *argv[])
     char fol[]="Assignment/";
     char fsize[50];
     /**
-     * Error Checking 
+     * Error Checking
      *  -if the Folder Exists
      *  -if filename has been provided
      *  -if file exists
-     * 
+     *
      * Warning in case multiple arguments given
      */
-    
+
     if(argc<2){
         write(1, "Error: Filename not provided\n", 29);
         return -1;
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 
     int input = open(argv[1], O_RDONLY);
     if(input==-1){
-        write(1, "File Not Exists\n", 16);
+        write(1, "\nFile Not Exists\n", 17);
         return -1;
     }
 
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
         }
         write(1, "Directory Already exists, continuing\n", 37);
     }
-    
+
     char opath[11+strlen(argv[1])];
     for(i=0;i<11;i++)
         opath[i]=fol[i];
@@ -108,37 +108,36 @@ int main(int argc, char *argv[])
     }
     opath[11+i]='\0';
     int output =  open(opath, O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
-    //adding for test
-        off_t tsize = lseek(input, 0, SEEK_END);
-        off_t j=tsize;
-	sprintf(fsize, "File Size: %ld Bytes\n", tsize);
-	write(1, fsize, 50);
-	write(1, "\r", 1); //If file size gets larger, due to static buffer size provided above nextline charecter isn't peoperly printed
-        while(1){
-            if(j>=size){
-                lseek(input, j-size, SEEK_SET);
-                read(input, buff, size);
-                revstr(buff, size);
-                j-=size;
-                write(output, buff, size);
-            }else{
-                lseek(input, 0, 0);
-                read(input, buff, j);
-                revstr(buff, j);
-                write(output, buff, j);
-                break;
-            }
-	load(j, tsize);
+    off_t tsize = lseek(input, 0, SEEK_END);
+    off_t j=tsize;
+    sprintf(fsize, "File Size: %ld Bytes\n", tsize);
+    write(1, fsize, 50);
+    write(1, "\r", 1); //If file size gets larger, due to static buffer size provided above nextline charecter isn't peoperly printed
+    while(1){
+        if(j>=size){
+            lseek(input, j-size, SEEK_SET);
+            read(input, buff, size);
+            revstr(buff, size);
+            j-=size;
+            write(output, buff, size);
+        }else{
+            lseek(input, 0, 0);
+            read(input, buff, j);
+            revstr(buff, j);
+            write(output, buff, j);
+            break;
         }
-        sprintf(buff, "\rReversed Successfully %.2f/100.00\n", 100.00);
-        write(1, buff, 36);
-	write(1, "\n[1/2] Closing Files\r", 21);
-        close(input);
-        write(1, "[2/2] Closing Files", 19);
-        close(output);
-        ti = clock() - ti;
-        double time_taken = ((double)ti)/CLOCKS_PER_SEC; // calculate the elapsed time
-        sprintf(buff, "\nThe program took %.2f seconds to execute\n\r", time_taken);
-	write(1, buff, 44);
-        return 0;
+	load(j, tsize);
+    }
+    sprintf(buff, "\rReversed Successfully %.2f/100.00\n", 100.00);
+    write(1, buff, 36);
+    write(1, "\n[1/2] Closing Files\r", 21);
+    close(input);
+    write(1, "[2/2] Closing Files", 19);
+    close(output);
+    ti = clock() - ti;
+    double time_taken = ((double)ti)/CLOCKS_PER_SEC; // calculate the elapsed time
+    sprintf(buff, "\nThe program took %.2f seconds to execute\n\r", time_taken);
+    write(1, buff, 44);
+    return 0;
 }
