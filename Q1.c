@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <stdio.h> //For sprintf only
+#include <libgen.h> // For basename to get absfilename from relativepath
 
 // For finding the lenth of string
 off_t strlen(char *str){
@@ -81,7 +82,7 @@ int main(int argc, char *argv[])
 
     int input = open(argv[1], O_RDONLY);
     if(input==-1){
-        write(1, "\nFile Not Exists\n", 17);
+        write(1, "File Not Exists\n", 16);
         return -1;
     }
 
@@ -96,48 +97,48 @@ int main(int argc, char *argv[])
         write(1, "Directory Already exists, continuing\n", 37);
     }
     
-    // Opening Assignment/filename
     char opath[11+strlen(argv[1])];
     for(i=0;i<11;i++)
         opath[i]=fol[i];
     i=0;
+    char *absfilename=basename(argv[1]);
     while(argv[1][i]){
-        opath[11+i]=argv[1][i];
+        opath[11+i]=absfilename[i];
         i++;
     }
     opath[11+i]='\0';
- 
     int output =  open(opath, O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
-    off_t tsize = lseek(input, 0, SEEK_END);
-    off_t j=tsize;
+    //adding for test
+        off_t tsize = lseek(input, 0, SEEK_END);
+        off_t j=tsize;
 	sprintf(fsize, "File Size: %ld Bytes\n", tsize);
 	write(1, fsize, 50);
 	write(1, "\r", 1); //If file size gets larger, due to static buffer size provided above nextline charecter isn't peoperly printed
-    while(1){
-        if(j>=size){
-            lseek(input, j-size, SEEK_SET);
-            read(input, buff, size);
-            revstr(buff, size);
-            j-=size;
-            write(output, buff, size);
-        }else{
-            lseek(input, 0, 0);
-            read(input, buff, j);
-            revstr(buff, j);
-            write(output, buff, j);
-            break;
+        while(1){
+            if(j>=size){
+                lseek(input, j-size, SEEK_SET);
+                read(input, buff, size);
+                revstr(buff, size);
+                j-=size;
+                write(output, buff, size);
+            }else{
+                lseek(input, 0, 0);
+                read(input, buff, j);
+                revstr(buff, j);
+                write(output, buff, j);
+                break;
+            }
+	load(j, tsize);
         }
-        load(j, tsize);
-    }
-    sprintf(buff, "\rReversed Successfully %.2f/100.00\n", 100.00);
-    write(1, buff, 36);
-    write(1, "\n[1/2] Closing Files\r", 21);
-    close(input);
-    write(1, "[2/2] Closing Files", 19);
-    close(output);
-    ti = clock() - ti;
-    double time_taken = ((double)ti)/CLOCKS_PER_SEC; // calculate the elapsed time
-    sprintf(buff, "\nThe program took %.2f seconds to execute\n\r", time_taken);
-    write(1, buff, 44);
-    return 0;
+        sprintf(buff, "\rReversed Successfully %.2f/100.00\n", 100.00);
+        write(1, buff, 36);
+	write(1, "\n[1/2] Closing Files\r", 21);
+        close(input);
+        write(1, "[2/2] Closing Files", 19);
+        close(output);
+        ti = clock() - ti;
+        double time_taken = ((double)ti)/CLOCKS_PER_SEC; // calculate the elapsed time
+        sprintf(buff, "\nThe program took %.2f seconds to execute\n\r", time_taken);
+	write(1, buff, 44);
+        return 0;
 }
