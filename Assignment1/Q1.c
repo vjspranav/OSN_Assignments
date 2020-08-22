@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <time.h>
 #include <stdio.h> //For sprintf only
-#include <libgen.h> // For basename to get absfilename from relativepath
 
 // For finding the lenth of string
 off_t strlen(char *str){
@@ -101,7 +100,14 @@ int main(int argc, char *argv[])
     for(i=0;i<11;i++)
         opath[i]=fol[i];
     i=0;
-    char *absfilename=basename(argv[1]);
+    int lasti=0;
+    while(argv[1][i]){
+        if(argv[1][i]=='/' && argv[1][i+1])
+            lasti=i+1;
+        i++;
+    }
+    char *absfilename=&argv[1][lasti];
+    i=0;
     while(argv[1][i]){
         opath[11+i]=absfilename[i];
         i++;

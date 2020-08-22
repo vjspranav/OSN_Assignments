@@ -1,5 +1,4 @@
-#include<fcntl.h>
-#include<errno.h>
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
@@ -37,14 +36,14 @@ int main(int argc, char *argv[])
     int flag[3] = {1, 1, 1};
     struct stat sb;
     /**
-     * Error Checking 
+     * Error Checking
      *  -if the Folder Exists
      *  -if filename has been provided
      *  -if file exists
-     * 
+     *
      * Warning in case multiple arguments given
      */
-    
+
     if(argc<2){
         write(1, "Error: Arguments not provided\n", 30);
         return -1;
@@ -112,7 +111,7 @@ int main(int argc, char *argv[])
     sprintf(obuff, "Whether file contents are reversed in newfile: %s\n\r\n", is_rev?"Yes\0":"No \0");
     write(1, obuff, 54);
     char filedir[3][9]={"oldfile", "newfile", "directory"};
-    
+
     // Printing Permissions for Old and New File
     for(i=0;i<=1;i++){
         if(!flag[i]) continue;
