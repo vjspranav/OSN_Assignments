@@ -56,11 +56,13 @@ int main(int argc, char *argv[])
     if(olfile==-1){
         write(1, "Old File does Not Exists\n", 25);
 	flag[0]=0;
+	is_rev=0;
     }
     int nefile = open(argv[2], O_RDONLY);
     if(nefile==-1){
         write(1, "New File does Not Exists\n", 25);
         flag[1]=0;
+	is_rev=0;
     }
     stat(argv[3], &sb);
     if(!(S_ISDIR(sb.st_mode))){
